@@ -1,0 +1,10 @@
+{
+  "id": 1,
+  "name": "Flameling",
+  "base_stats": {
+    "hp": 39,
+    "atk": 52,
+    "def": 43,
+    "spd": 65
+  }
+}

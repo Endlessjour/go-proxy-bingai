@@ -52,6 +52,10 @@ void BattleSystem::SetMoveDatabase(const Data::MoveDatabase* moveDatabase) {
     moveDatabase_ = moveDatabase;
 }
 
+void BattleSystem::SetPlayerParty(Capture::PlayerParty* playerParty) {
+    playerParty_ = playerParty;
+}
+
 void BattleSystem::StartWildBattle(const MonsterInstance& wildMonster) {
     activeWild_ = wildMonster;
     turnCount_ = 0;
@@ -133,9 +137,9 @@ void BattleSystem::ResolveCommands() {
         const double ballRate = 1.0;
         const bool captured = captureSystem_.TryCapture(activeWild_, ballRate);
         if (captured) {
-            if (playerParty_.Add(activeWild_)) {
+            if (playerParty_ != nullptr && playerParty_->Add(activeWild_)) {
                 std::cout << "Capture success: species=" << activeWild_.speciesId
-                          << " party_size=" << playerParty_.Size() << '/' << playerParty_.MaxSize() << '\n';
+                          << " party_size=" << playerParty_->Size() << '/' << playerParty_->MaxSize() << '\n';
                 activeWild_.currentHp = 0;
             } else {
                 std::cout << "Capture failed: party full" << '\n';
@@ -174,11 +178,20 @@ void BattleSystem::ResolveCommands() {
     if (activeWild_.currentHp > 0) {
         applyUseMove(wildCommand_);
     }
+
+    SyncPlayerMonsterToParty();
 }
 
 void BattleSystem::EnsurePlayerMonster() {
-    if (playerMonster_.speciesId != 0 && playerMonster_.currentHp > 0) {
-        return;
+    if (playerParty_ != nullptr) {
+        const auto& members = playerParty_->GetMembers();
+        for (std::size_t i = 0; i < members.size(); ++i) {
+            if (members[i].currentHp > 0) {
+                playerMonster_ = members[i];
+                activePartyIndex_ = i;
+                return;
+            }
+        }
     }
 
     playerMonster_.uid = 999001;
@@ -193,6 +206,22 @@ void BattleSystem::EnsurePlayerMonster() {
             playerMonster_.moves.push_back({moveId, 25});
         }
     }
+
+    activePartyIndex_ = 0;
+}
+
+void BattleSystem::SyncPlayerMonsterToParty() {
+    if (playerParty_ == nullptr) {
+        return;
+    }
+
+    auto members = playerParty_->GetMembers();
+    if (activePartyIndex_ >= members.size()) {
+        return;
+    }
+
+    members[activePartyIndex_] = playerMonster_;
+    playerParty_->SetMembers(members);
 }
 
 } // namespace Battle

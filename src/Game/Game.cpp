@@ -28,6 +28,7 @@ Game::Game(Render::RenderSystem& renderSystem)
     });
 
     battleSystem_.SetMoveDatabase(&moveDatabase_);
+    battleSystem_.SetPlayerParty(&playerParty_);
     lastPlayerTileX_ = player_.GetTileX();
     lastPlayerTileY_ = player_.GetTileY();
 }

@@ -38,6 +38,7 @@ struct BattleCommand {
 class BattleSystem {
 public:
     void SetMoveDatabase(const Data::MoveDatabase* moveDatabase);
+    void SetPlayerParty(Capture::PlayerParty* playerParty);
     void StartWildBattle(const MonsterInstance& wildMonster);
     void Tick();
 
@@ -49,16 +50,18 @@ private:
     void SelectCommands();
     void ResolveCommands();
     void EnsurePlayerMonster();
+    void SyncPlayerMonsterToParty();
 
     const Data::MoveDatabase* moveDatabase_ = nullptr;
     Capture::CaptureSystem captureSystem_{};
-    Capture::PlayerParty playerParty_{};
+    Capture::PlayerParty* playerParty_ = nullptr;
     BattleState state_ = BattleState::Finished;
     MonsterInstance playerMonster_{};
     MonsterInstance activeWild_{};
     BattleCommand playerCommand_{};
     BattleCommand wildCommand_{};
     int turnCount_ = 0;
+    std::size_t activePartyIndex_ = 0;
 };
 
 } // namespace Battle

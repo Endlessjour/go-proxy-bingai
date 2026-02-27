@@ -1,0 +1,9 @@
+{
+  "player": {
+    "position": { "map": "route01", "x": 12, "y": 7 }
+  },
+  "party": [],
+  "flags": {
+    "intro_complete": false
+  }
+}

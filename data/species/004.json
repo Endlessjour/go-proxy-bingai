@@ -1,0 +1,10 @@
+{
+  "id": 4,
+  "name": "Mosscub",
+  "base_stats": {
+    "hp": 44,
+    "atk": 48,
+    "def": 50,
+    "spd": 40
+  }
+}

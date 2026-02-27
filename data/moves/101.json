@@ -1,0 +1,9 @@
+{
+  "id": 101,
+  "name": "Ember",
+  "power": 40,
+  "accuracy": 100,
+  "type": "Fire",
+  "category": "Special",
+  "target": "Single"
+}
